@@ -20,7 +20,12 @@ export const translations = {
         change_lang: "اردو میں دیکھیں",
         subject_scores: "Subject Wise Scores",
         see_more: "See More",
-        mark_attendance: "Attendance Marked"
+        mark_attendance: "Attendance Marked",
+        back: "Back",
+        fees: "Fees",
+        messages: "Messages",
+        menu: "Menu",
+        logout: "Logout"
     },
     ur: {
         hello: "ہیلو",
@@ -43,6 +48,14 @@ export const translations = {
         change_lang: "View in English",
         subject_scores: "مضمون وار نمبرات",
         see_more: "مزید دیکھیں",
-        mark_attendance: "حاضری لگ گئی"
+        mark_attendance: "حاضری لگ گئی",
+        back: "پیچھے",
+        fees: "فیس",
+        messages: "پیغامات",
+        menu: "مینو",
+        logout: "لاگ آؤٹ",
+        view_report_card: "رپورٹ کارڈ دیکھیں",
+        report_card: "تعلیمی رپورٹ کارڈ",
+        download_pdf: "پی ڈی ایف رپورٹ ڈاؤن لوڈ کریں"
     }
 };
