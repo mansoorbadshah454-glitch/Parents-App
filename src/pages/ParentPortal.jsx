@@ -47,12 +47,76 @@ const ParentPortal = ({ user }) => {
     const schoolId = user?.schoolId;
     const parentUserId = user?.uid;
 
-    // Kids Data (Hardcoded for now as per current app state)
-    // In a real scenario, this would come from a user profile fetch
-    const [kids] = useState([
-        { id: 1, name: "Ali Ahmed", class: "10-A", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Kid1", rank: 3, attendance: 94, health: 98, behavior: 92, hygiene: 100, scores: { Math: 85, Science: 92, English: 88, History: 74 } },
-        { id: 2, name: "Zainab Ahmed", class: "6-B", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Kid2", rank: 1, attendance: 98, health: 95, behavior: 98, hygiene: 95, scores: { Math: 96, Science: 94, English: 98, History: 92 } }
-    ]);
+    // Kids Data (Fetched dynamically from Firestore)
+    const [kids, setKids] = useState([]);
+
+    // Real-time Kids Listener
+    // Real-time Kids Listener
+    useEffect(() => {
+        if (!schoolId || !parentUserId) return;
+
+        let unsubscribes = [];
+
+        // 1. Listen to parent document for linked student IDs
+        const parentDocRef = doc(db, `schools/${schoolId}/parents`, parentUserId);
+        const unsubscribeParent = onSnapshot(parentDocRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const linkedStudents = data.linkedStudents || data.children || [];
+
+                // Clear existing student unsubscribes before setting up new ones
+                unsubscribes.forEach(unsub => unsub());
+                unsubscribes = [];
+
+                const kidsMap = {};
+
+                linkedStudents.forEach((link) => {
+                    const studentId = typeof link === 'string' ? link : link.studentId;
+                    if (!studentId) return;
+
+                    const studentDocRef = doc(db, `schools/${schoolId}/students`, studentId);
+                    const unsubStudent = onSnapshot(studentDocRef, (sSnap) => {
+                        if (sSnap.exists()) {
+                            const sData = sSnap.data();
+
+                            // Map academic scores array to object format for UI
+                            const scoresObj = {};
+                            (sData.academicScores || []).forEach(item => {
+                                scoresObj[item.subject] = parseInt(item.score) || 0;
+                            });
+
+                            // Map homework scores to an average score for the MetricCard
+                            const hwScores = (sData.homeworkScores || []).map(s => parseInt(s.score) || 0);
+                            const hwAvg = hwScores.length ? Math.round(hwScores.reduce((a, b) => a + b, 0) / hwScores.length) : 0;
+
+                            kidsMap[studentId] = {
+                                id: studentId,
+                                name: sData.name || `${sData.firstName} ${sData.lastName}`,
+                                class: sData.className || sData.class || 'N/A',
+                                image: sData.profilePic || sData.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${studentId}`,
+                                rank: sData.rank || 0,
+                                attendance: sData.attendance?.percentage || sData.attendance || 0,
+                                health: sData.wellness?.health || 80,
+                                behavior: sData.wellness?.behavior || 80,
+                                hygiene: sData.wellness?.hygiene || 80,
+                                homework: hwAvg || sData.homework || 0,
+                                scores: Object.keys(scoresObj).length ? scoresObj : (sData.scores || {})
+                            };
+
+                            // Update state with the new map values
+                            setKids(Object.values(kidsMap));
+                        }
+                    }, (err) => console.error("Student listener error:", err));
+                    unsubscribes.push(unsubStudent);
+                });
+            }
+        }, (err) => console.error("Parent listener error:", err));
+
+        return () => {
+            unsubscribeParent();
+            unsubscribes.forEach(unsub => unsub());
+        };
+    }, [parentUserId, schoolId]);
 
     // Real-time Notifications Listener
     useEffect(() => {
@@ -166,7 +230,6 @@ const ParentPortal = ({ user }) => {
     // END: Real Feed Logic
 
     const handleLike = async (post) => {
-        const schoolId = "10LdYt5s40hE007y"; // consistent ID
         // Optimistic update handled by listener
         const postRef = doc(db, `schools/${schoolId}/posts`, post.id);
         const isLiked = post.likes?.includes(parentUserId);
@@ -187,7 +250,6 @@ const ParentPortal = ({ user }) => {
     };
 
     const handleShare = async (post) => {
-        const schoolId = "10LdYt5s40hE007y";
         try {
             // Just increment count for now
             const postRef = doc(db, `schools/${schoolId}/posts`, post.id);
