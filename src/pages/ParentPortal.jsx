@@ -91,7 +91,7 @@ const ParentPortal = ({ user }) => {
 
                             kidsMap[studentId] = {
                                 id: studentId,
-                                name: sData.name || `${sData.firstName} ${sData.lastName}`,
+                                name: sData.name || [sData.firstName, sData.lastName].filter(Boolean).join(' ') || 'Student',
                                 class: sData.className || sData.class || 'N/A',
                                 image: sData.profilePic || sData.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${studentId}`,
                                 rank: sData.rank || 0,
