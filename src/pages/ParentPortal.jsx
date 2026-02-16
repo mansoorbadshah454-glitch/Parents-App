@@ -337,10 +337,33 @@ const ParentPortal = ({ user }) => {
                                         border: '3px solid rgba(255, 255, 255, 0.9)',
                                         padding: '4px',
                                         background: 'rgba(255, 255, 255, 0.2)',
-                                        backdropFilter: 'blur(6px)',
+                                        backdropFilter: 'blur(8px)',
                                         boxShadow: '0 12px 24px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.3)',
-                                        transform: 'translateY(-2px)'
+                                        transform: 'translateY(-2px)',
+                                        position: 'relative',
+                                        overflow: 'hidden'
                                     }}>
+                                        {/* Animated Shine Effect */}
+                                        <motion.div
+                                            animate={{
+                                                left: ['-100%', '200%'],
+                                            }}
+                                            transition={{
+                                                duration: 3,
+                                                repeat: Infinity,
+                                                ease: "linear",
+                                                repeatDelay: 1
+                                            }}
+                                            style={{
+                                                position: 'absolute',
+                                                top: 0,
+                                                width: '50%',
+                                                height: '100%',
+                                                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+                                                transform: 'skewX(-20deg)',
+                                                zIndex: 1
+                                            }}
+                                        />
                                         <img src={kid.image} style={{ width: '100%', height: '100%', borderRadius: '50%', background: 'white', objectFit: 'cover' }} />
                                     </div>
                                     <span style={{ fontSize: '0.9rem', fontWeight: '900', color: 'white', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>{kid.name.split(' ')[0]}</span>
@@ -504,13 +527,69 @@ const KidDetailView = ({ kid, onBack, t }) => (
             padding: '25px',
             textAlign: 'center',
             position: 'relative',
-            background: 'linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%)',
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(243, 232, 255, 0.8) 100%)',
             border: 'none',
             boxShadow: '0 15px 35px -5px rgba(107, 33, 168, 0.3)',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)'
         }}>
-            {/* Decorative accents for detail card */}
-            <div style={{ position: 'absolute', top: '-10px', right: '-10px', width: '60px', height: '60px', background: 'rgba(168, 85, 247, 0.05)', borderRadius: '50%' }} />
+            {/* Decorative accents, sparks and shines */}
+            <div style={{ position: 'absolute', top: '-10px', right: '-10px', width: '80px', height: '80px', background: 'radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%)', borderRadius: '50%' }} />
+            <div style={{ position: 'absolute', bottom: '-20px', left: '-10px', width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, transparent 70%)', borderRadius: '50%' }} />
+
+            {/* Dynamic Sparks */}
+            {[...Array(6)].map((_, i) => (
+                <motion.div
+                    key={i}
+                    animate={{
+                        scale: [0, 1, 0],
+                        opacity: [0, 0.8, 0],
+                        y: [0, -20, -40],
+                        x: [0, (i % 2 === 0 ? 10 : -10), (i % 2 === 0 ? 20 : -20)]
+                    }}
+                    transition={{
+                        duration: 2 + Math.random() * 2,
+                        repeat: Infinity,
+                        delay: Math.random() * 5,
+                        ease: "easeInOut"
+                    }}
+                    style={{
+                        position: 'absolute',
+                        top: `${Math.random() * 100}%`,
+                        left: `${Math.random() * 100}%`,
+                        width: '4px',
+                        height: '4px',
+                        background: '#a855f7',
+                        borderRadius: '50%',
+                        boxShadow: '0 0 10px #a855f7',
+                        pointerEvents: 'none'
+                    }}
+                />
+            ))}
+
+            {/* Moving Shine Sweep */}
+            <motion.div
+                animate={{
+                    left: ['-100%', '200%'],
+                }}
+                transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    repeatDelay: 2
+                }}
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    width: '30%',
+                    height: '100%',
+                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+                    transform: 'skewX(-25deg)',
+                    pointerEvents: 'none',
+                    zIndex: 1
+                }}
+            />
 
             <img src={kid.image} style={{
                 width: '100px',
