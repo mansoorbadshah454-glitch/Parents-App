@@ -25,15 +25,17 @@ import {
     Plus
 } from 'lucide-react';
 import { translations } from '../translations';
-import { db } from '../firebase';
-import { collection, query, where, onSnapshot, orderBy, doc, updateDoc, arrayUnion, arrayRemove, increment } from 'firebase/firestore';
+import { db, storage } from '../firebase';
+import { collection, query, where, onSnapshot, orderBy, doc, updateDoc, arrayUnion, arrayRemove, increment, getDoc } from 'firebase/firestore';
+import { ref, getDownloadURL } from 'firebase/storage';
 
-const ParentPortal = () => {
+const ParentPortal = ({ user }) => {
     const [lang, setLang] = useState('en');
     const [activeTab, setActiveTab] = useState('feed'); // 'feed', 'kids', 'notif', 'menu'
     const [selectedKid, setSelectedKid] = useState(null);
     const [showSettings, setShowSettings] = useState(false);
-    const [schoolInfo, setSchoolInfo] = useState({ name: 'Sunrise International School', logo: 'https://cdn-icons-png.flaticon.com/512/2991/2991148.png' });
+    const [schoolInfo, setSchoolInfo] = useState({ name: 'School Portal', logo: 'https://cdn-icons-png.flaticon.com/512/2991/2991148.png' });
+    const [posts, setPosts] = useState([]); // Added missing state for posts
 
     const t = translations[lang];
     const isRTL = lang === 'ur';
@@ -41,12 +43,9 @@ const ParentPortal = () => {
     // State for real-time notifications
     const [notifications, setNotifications] = useState([]);
 
-    // DUMMY SCHOOL ID - In a real app, this comes from login/URL
-    // You MUST replace this with a valid schoolId to see real posts
-    const DEMO_SCHOOL_ID = "MOCK_SCHOOL_ID";
-
-    // Mock Parent User ID - In real app, this comes from auth
-    const parentUserId = "mock_parent_id_123";
+    // Authenticated data from props
+    const schoolId = user?.schoolId;
+    const parentUserId = user?.uid;
 
     // Kids Data (Hardcoded for now as per current app state)
     // In a real scenario, this would come from a user profile fetch
@@ -57,7 +56,58 @@ const ParentPortal = () => {
 
     // Real-time Notifications Listener
     useEffect(() => {
-        const schoolId = "10LdYt5s40hE007y"; // Replace with actual schoolId from auth
+        if (!schoolId || !parentUserId) return;
+
+        // Fetch School Info (Name & Logo)
+        const fetchSchoolInfo = async () => {
+            console.log("ParentPortal: Fetching info for school:", schoolId);
+            try {
+                // Path 1: Root Doc (Newer architecture)
+                const schoolDoc = await getDoc(doc(db, "schools", schoolId));
+                let fetchedName = '';
+                let fetchedLogo = '';
+
+                if (schoolDoc.exists()) {
+                    fetchedName = schoolDoc.data().name || '';
+                    fetchedLogo = schoolDoc.data().logo || schoolDoc.data().profileImage || '';
+                }
+
+                // Path 2: Settings/Profile doc (Legacy or specific settings)
+                if (!fetchedLogo) {
+                    const settingsSnap = await getDoc(doc(db, `schools/${schoolId}/settings`, 'profile'));
+                    if (settingsSnap.exists()) {
+                        fetchedName = fetchedName || settingsSnap.data().name || '';
+                        fetchedLogo = settingsSnap.data().profileImage || '';
+                    }
+                }
+
+                // Path 3: Direct Storage check (Fallback)
+                if (!fetchedLogo) {
+                    console.log("ParentPortal: Trying direct storage fallback...");
+                    const extensions = ['png', 'jpg', 'jpeg', 'webp'];
+                    for (const ext of extensions) {
+                        try {
+                            const logoPath = `schools/${schoolId}/profile.${ext}`;
+                            const logoRef = ref(storage, logoPath);
+                            fetchedLogo = await getDownloadURL(logoRef);
+                            if (fetchedLogo) {
+                                console.log(`ParentPortal: Found storage logo: ${logoPath}`);
+                                break;
+                            }
+                        } catch (err) { }
+                    }
+                }
+
+                setSchoolInfo({
+                    name: fetchedName || 'School Portal',
+                    logo: fetchedLogo || 'https://cdn-icons-png.flaticon.com/512/2991/2991148.png'
+                });
+            } catch (e) {
+                console.error("ParentPortal: Error fetching school info", e);
+            }
+        };
+
+        fetchSchoolInfo();
 
         const q = query(
             collection(db, `schools/${schoolId}/notifications`),
@@ -77,16 +127,10 @@ const ParentPortal = () => {
         });
 
         return () => unsubscribe();
-    }, [parentUserId]);
+    }, [parentUserId, schoolId]);
 
     useEffect(() => {
-        // Try getting schoolId from URL queries if needed, else use DEMO
-        // const params = new URLSearchParams(window.location.search);
-        // const schoolId = params.get('schoolId') || DEMO_SCHOOL_ID;
-
-        // For development confirmation, I'll attempt to find one from recently viewed files if possible, 
-        // but for now let's rely on a hardcoded one or leave empty
-        const schoolId = "10LdYt5s40hE007y"; // Example ID, Replace with yours or logic
+        if (!schoolId) return;
 
         const q = query(
             collection(db, `schools/${schoolId}/posts`),
@@ -155,7 +199,15 @@ const ParentPortal = () => {
             console.error("Error sharing post parent:", error);
         }
     };
-
+    const handleLogout = async () => {
+        try {
+            await auth.signOut();
+            localStorage.removeItem('parent_session');
+            window.location.href = '/login';
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    };
 
     return (
         <div className={`app-container ${isRTL ? 'rtl urdu-text' : ''}`}>
@@ -164,7 +216,7 @@ const ParentPortal = () => {
                 {showSettings && (
                     <motion.div
                         initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
-                        style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--fb-bg)', zIndex: 2000, maxWidth: '600px', margin: '0 auto', padding: '20px' }}
+                        style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--fb-bg)', zIndex: 2000, maxWidth: '500px', margin: '0 auto', padding: '20px' }}
                     >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
                             <h2 style={{ fontWeight: '800' }}>Settings / ترتیبات</h2>
@@ -190,7 +242,7 @@ const ParentPortal = () => {
                             </div>
                         </div>
 
-                        <div className="card" style={{ padding: '15px', marginTop: '15px' }}>
+                        <div className="card" onClick={handleLogout} style={{ padding: '15px', marginTop: '15px', cursor: 'pointer' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#dc2626' }}>
                                 <LogOut />
                                 <span style={{ fontWeight: '600' }}>Logout Sessions</span>

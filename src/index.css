@@ -48,7 +48,7 @@ body {
 }
 
 .app-container {
-  max-width: 600px;
+  max-width: 500px;
   margin: 0 auto;
   min-height: 100vh;
   position: relative;
@@ -97,7 +97,7 @@ body {
   justify-content: space-around;
   align-items: center;
   z-index: 1000;
-  max-width: 600px;
+  max-width: 500px;
   margin: 0 auto;
 }
 
