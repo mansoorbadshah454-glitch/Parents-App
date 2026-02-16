@@ -257,18 +257,35 @@ const ParentPortal = ({ user }) => {
             {/* Header */}
             <header style={{
                 background: 'var(--fb-card)',
-                padding: '10px 15px',
+                padding: '12px 15px',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 position: 'sticky',
                 top: 0,
                 zIndex: 100,
-                borderBottom: '1px solid var(--fb-border)'
+                borderBottom: '1px solid var(--fb-border)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                backdropFilter: 'blur(8px)'
             }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <img src={schoolInfo.logo} style={{ width: '35px', height: '35px' }} alt="Logo" />
-                    <h1 style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--fb-blue)' }}>{schoolInfo.name}</h1>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <img src={schoolInfo.logo} style={{
+                        width: '38px',
+                        height: '38px',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                    }} alt="Logo" />
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <h1 style={{ fontSize: '1.2rem', fontWeight: '800', lineHeight: 1.1, color: '#7e22ce' }}>{schoolInfo.name}</h1>
+                        <div style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            marginTop: '1px'
+                        }}>
+                            <span style={{ fontSize: '0.7rem', fontWeight: '700', color: 'var(--fb-muted)', letterSpacing: '0.05em' }}>TRACK YOUR KID'S EDUCATION</span>
+                        </div>
+                    </div>
                 </div>
                 <div style={{ display: 'flex', gap: '8px' }}>
                     <button onClick={() => setShowSettings(true)} className="btn-press" style={{ background: '#E4E6EB', border: 'none', padding: '8px', borderRadius: '50%', cursor: 'pointer' }}>
@@ -286,13 +303,47 @@ const ParentPortal = ({ user }) => {
                     <motion.div key="feed" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
 
                         {/* Kids Circular Slider */}
-                        <div style={{ padding: '15px 15px', display: 'flex', gap: '20px', overflowX: 'auto', background: 'var(--fb-card)', marginBottom: '10px', scrollbarWidth: 'none' }}>
+                        <div style={{
+                            padding: '24px 15px',
+                            display: 'flex',
+                            gap: '20px',
+                            overflowX: 'auto',
+                            background: 'linear-gradient(135deg, #9333ea 0%, #6b21a8 100%)',
+                            marginBottom: '15px',
+                            scrollbarWidth: 'none',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            borderRadius: '0 0 32px 32px',
+                            boxShadow: 'inset 0 -10px 20px rgba(0,0,0,0.15), 0 10px 20px rgba(107, 33, 168, 0.2)'
+                        }}>
+                            {/* 3D Decorative background design */}
+                            <div style={{ position: 'absolute', top: '-10px', right: '-10px', width: '120px', height: '120px', background: 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+                            <div style={{ position: 'absolute', bottom: '-40px', left: '5%', width: '150px', height: '150px', background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+
                             {kids.map(kid => (
-                                <div key={kid.id} onClick={() => setSelectedKid(kid)} className="btn-press" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', minWidth: '70px', cursor: 'pointer' }}>
-                                    <div style={{ width: '64px', height: '64px', borderRadius: '50%', border: '3px solid var(--fb-blue)', padding: '3px' }}>
+                                <div key={kid.id} onClick={() => setSelectedKid(kid)} className="btn-press" style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                    minWidth: '85px',
+                                    cursor: 'pointer',
+                                    zIndex: 1
+                                }}>
+                                    <div style={{
+                                        width: '72px',
+                                        height: '72px',
+                                        borderRadius: '50%',
+                                        border: '3px solid rgba(255, 255, 255, 0.9)',
+                                        padding: '4px',
+                                        background: 'rgba(255, 255, 255, 0.2)',
+                                        backdropFilter: 'blur(6px)',
+                                        boxShadow: '0 12px 24px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.3)',
+                                        transform: 'translateY(-2px)'
+                                    }}>
                                         <img src={kid.image} style={{ width: '100%', height: '100%', borderRadius: '50%', background: 'white', objectFit: 'cover' }} />
                                     </div>
-                                    <span style={{ fontSize: '0.8rem', fontWeight: '800' }}>{kid.name.split(' ')[0]}</span>
+                                    <span style={{ fontSize: '0.9rem', fontWeight: '900', color: 'white', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>{kid.name.split(' ')[0]}</span>
                                 </div>
                             ))}
                         </div>
@@ -449,10 +500,29 @@ const KidDetailView = ({ kid, onBack, t }) => (
     <motion.div initial={{ x: 300, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 300, opacity: 0 }} style={{ padding: '15px', paddingBottom: '100px' }}>
         <button onClick={onBack} style={{ background: '#E4E6EB', border: 'none', padding: '10px 15px', borderRadius: '10px', fontWeight: '700', marginBottom: '20px' }}>← Back</button>
 
-        <div className="card" style={{ padding: '25px', textAlign: 'center', position: 'relative' }}>
-            <img src={kid.image} style={{ width: '100px', height: '100px', borderRadius: '50%', border: '4px solid var(--fb-blue)', marginBottom: '15px', background: 'white' }} />
-            <h2 style={{ fontSize: '1.5rem', fontWeight: '800' }}>{kid.name}</h2>
-            <p style={{ color: 'var(--fb-muted)', fontSize: '0.9rem', marginBottom: '15px' }}>{kid.class}</p>
+        <div className="card" style={{
+            padding: '25px',
+            textAlign: 'center',
+            position: 'relative',
+            background: 'linear-gradient(135deg, #ffffff 0%, #f3e8ff 100%)',
+            border: 'none',
+            boxShadow: '0 15px 35px -5px rgba(107, 33, 168, 0.3)',
+            overflow: 'hidden'
+        }}>
+            {/* Decorative accents for detail card */}
+            <div style={{ position: 'absolute', top: '-10px', right: '-10px', width: '60px', height: '60px', background: 'rgba(168, 85, 247, 0.05)', borderRadius: '50%' }} />
+
+            <img src={kid.image} style={{
+                width: '100px',
+                height: '100px',
+                borderRadius: '50%',
+                border: '4px solid #a855f7',
+                marginBottom: '15px',
+                background: 'white',
+                boxShadow: '0 8px 20px rgba(168, 85, 247, 0.2)'
+            }} />
+            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: '#6b21a8' }}>{kid.name}</h2>
+            <p style={{ color: '#a855f7', fontSize: '0.9rem', fontWeight: '700', marginBottom: '15px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{kid.class}</p>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginTop: '10px' }}>
                 <div style={{ background: '#E7F3FF', padding: '15px', borderRadius: '16px' }}>
@@ -492,14 +562,23 @@ const KidDetailView = ({ kid, onBack, t }) => (
 );
 
 const MetricCard = ({ label, value, icon: Icon, color }) => (
-    <div className="card" style={{ padding: '15px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+    <div className="card" style={{
+        padding: '15px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
+        background: 'rgba(255, 255, 255, 0.9)',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(168, 85, 247, 0.1)',
+        boxShadow: '0 4px 15px rgba(0,0,0,0.05)'
+    }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ padding: '8px', background: `${color}15`, borderRadius: '10px' }}>
                 <Icon size={20} color={color} />
             </div>
-            <span style={{ fontWeight: '800', color }}>{value}%</span>
+            <span style={{ fontWeight: '800', color, fontSize: '1.1rem' }}>{value}%</span>
         </div>
-        <span style={{ fontSize: '0.8rem', fontWeight: '600', color: 'var(--fb-muted)' }}>{label}</span>
+        <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--fb-muted)', textTransform: 'uppercase', letterSpacing: '0.02em' }}>{label}</span>
     </div>
 );
 
