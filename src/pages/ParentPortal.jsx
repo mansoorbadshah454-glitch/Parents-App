@@ -332,44 +332,47 @@ const ParentPortal = ({ user }) => {
     };
 
     return (
-        <div className={`app-container ${isRTL ? 'rtl urdu-text' : ''}`} style={{ display: 'flex', flexDirection: 'column', height: '100dvh', background: '#F0F2F5' }}>
+        <div className={`app-container ${isRTL ? 'rtl urdu-text' : ''}`} style={{ display: 'flex', flexDirection: 'column', height: '100dvh', background: '#F0F2F5', overflow: 'hidden' }}>
             {/* Professional Header */}
             <header style={{
-                background: 'rgba(255, 255, 255, 0.9)',
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 padding: '1rem 1.25rem',
-                borderBottom: '1px solid rgba(0,0,0,0.06)',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 position: 'sticky',
                 top: 0,
                 zIndex: 1000,
-                boxShadow: '0 4px 15px rgba(0,0,0,0.05)'
+                boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
+                borderRadius: '0 0 20px 20px'
             }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <div style={{
-                        width: '38px', height: '38px', borderRadius: '10px',
-                        background: 'linear-gradient(135deg, #1877F2 0%, #0056b3 100%)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        boxShadow: '0 4px 10px rgba(24, 119, 242, 0.2)'
+                        width: '50px',
+                        height: '50px',
+                        borderRadius: '12px',
+                        background: 'white',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+                        padding: '8px'
                     }}>
-                        <img src={schoolInfo.logo} style={{ width: '24px', height: '24px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} alt="Logo" />
+                        <img src={schoolInfo.logo} style={{ width: '100%', height: '100%', objectFit: 'contain' }} alt="Logo" />
                     </div>
                     <div>
-                        <h1 style={{ fontSize: '1.1rem', fontWeight: '900', color: '#1c1e21', letterSpacing: '-0.01em', margin: 0 }}>
+                        <h1 style={{ fontSize: '1.2rem', fontWeight: '800', color: 'white', margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
                             {schoolInfo.name}
                         </h1>
-                        <p style={{ fontSize: '0.65rem', fontWeight: '700', color: '#65676b', margin: 0, textTransform: 'uppercase' }}>Parent Portal</p>
+                        <p style={{ fontSize: '0.75rem', fontWeight: '400', color: 'white', margin: 0, fontFamily: 'Montserrat, sans-serif' }}>TRACK YOUR KID'S EDUCATION</p>
                     </div>
                 </div>
-                <div onClick={() => setActiveTab('menu')} style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#F0F2F5', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                    <Settings size={18} color="#65676b" />
+                <div onClick={() => setActiveTab('menu')} style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backdropFilter: 'blur(10px)' }}>
+                    <Settings size={20} color="white" />
                 </div>
             </header>
 
-            <div style={{ flex: 1, overflowY: 'auto' }}>
+            <div style={{ flex: 1, overflowY: 'auto', marginTop: '-20px', paddingTop: '20px', borderRadius: '20px 20px 0 0', background: '#F0F2F5' }}>
                 <AnimatePresence mode="wait">
                     {selectedKid ? (
                         showAttendance ? (
@@ -412,12 +415,13 @@ const ParentPortal = ({ user }) => {
                         <motion.div key="feed" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                             {/* Kids Circular Slider */}
                             <div style={{
-                                padding: '24px 15px',
+                                padding: '32px 15px',
                                 display: 'flex',
                                 gap: '20px',
                                 overflowX: 'auto',
                                 background: 'linear-gradient(135deg, #9333ea 0%, #6b21a8 100%)',
                                 marginBottom: '15px',
+                                marginTop: '-20px',
                                 scrollbarWidth: 'none',
                                 position: 'relative',
                                 overflow: 'hidden',
@@ -464,14 +468,14 @@ const ParentPortal = ({ user }) => {
                                             flexDirection: 'column',
                                             alignItems: 'center',
                                             gap: '8px',
-                                            minWidth: '65px',
+                                            minWidth: '80px',
                                             cursor: 'pointer',
                                             zIndex: 1
                                         }}
                                     >
                                         <div style={{
-                                            width: '60px',
-                                            height: '60px',
+                                            width: '75px',
+                                            height: '75px',
                                             borderRadius: '50%',
                                             padding: '2px',
                                             background: 'linear-gradient(45deg, #FFD700, #8A2BE2)',
