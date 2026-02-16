@@ -28,7 +28,7 @@ const KidDetailView = ({ kid, onBack, onShowAttendance, onShowReportCard, t }) =
         <button onClick={onBack} style={{ background: '#E4E6EB', border: 'none', padding: '10px 15px', borderRadius: '10px', fontWeight: '700', marginBottom: '20px' }}>← {t.back || 'Back'}</button>
 
         <div className="card" style={{
-            padding: '25px',
+            padding: '12px 20px',
             textAlign: 'center',
             position: 'relative',
             background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(243, 232, 255, 0.8) 100%)',
@@ -77,7 +77,7 @@ const KidDetailView = ({ kid, onBack, onShowAttendance, onShowReportCard, t }) =
                 height: '100px',
                 borderRadius: '50%',
                 border: '4px solid #a855f7',
-                marginBottom: '15px',
+                marginBottom: '10px',
                 background: 'white',
                 boxShadow: '0 8px 20px rgba(168, 85, 247, 0.2)',
                 position: 'relative',
@@ -107,9 +107,9 @@ const KidDetailView = ({ kid, onBack, onShowAttendance, onShowReportCard, t }) =
                 }}
             />
             <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: '#6b21a8' }}>{kid.name}</h2>
-            <p style={{ color: '#a855f7', fontSize: '0.9rem', fontWeight: '700', marginBottom: '15px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{kid.class}</p>
+            <p style={{ color: '#a855f7', fontSize: '0.9rem', fontWeight: '700', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{kid.class}</p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginTop: '10px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginTop: '5px' }}>
                 <div style={{ background: '#E7F3FF', padding: '15px', borderRadius: '16px' }}>
                     <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '800', color: '#1877F2' }}>#{kid.rank}</span>
                     <span style={{ fontSize: '0.75rem', fontWeight: '600', color: '#1877F2' }}>{t.rank}</span>

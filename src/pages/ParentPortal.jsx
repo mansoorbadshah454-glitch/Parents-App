@@ -335,7 +335,7 @@ const ParentPortal = ({ user }) => {
         <div className={`app-container ${isRTL ? 'rtl urdu-text' : ''}`} style={{ display: 'flex', flexDirection: 'column', height: '100dvh', background: '#F0F2F5', overflow: 'hidden' }}>
             {/* Professional Header */}
             <header style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: 'rgb(107, 33, 168)',
                 padding: '1rem 1.25rem',
                 display: 'flex',
                 justifyContent: 'space-between',
